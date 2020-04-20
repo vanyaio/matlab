@@ -47,10 +47,23 @@ function [x, y] = euler_back(y0, x0, f, h, steps)
 	end
 end
 
+function [x, y] = euler_for3(y0, x0, f, h, steps)
+	x = [];
+	y = [];
+
+	y(1) = y0;
+	x(1) = x0;
+	for j = 2:steps
+		y(j) = (1 - h * 10000) * y(j-1);
+		x(j) = x(j-1) + h;
+		if (j < 10)
+			y(j)
+		end
+	end
+end
 function [x, y] = euler_back_for3(y0, x0, f, h, steps)
 	x = [];
 	y = [];
-	n = length(y0);
 
 	y(1) = y0;
 	x(1) = x0;
@@ -148,13 +161,20 @@ end
 
 function [] = mainreal3()
 	%{
-	 { h = 0.001;
+	 { h = 0.00009;
+	 { steps = 900000;
 	 %}
+
 	%{
-	 { h = 0.00022;
+	 { h = 0.00019;
+	 { steps = 900000;
 	 %}
-	h = 0.00009;
-	steps = 8000;
+
+	%{
+	 { h = 0.00021;
+	 { steps = 900000;
+	 %}
+
 %{
  {     syms y(t)
  {     eqn = diff(y,t,1) == -10000 * y;
@@ -175,12 +195,12 @@ function [] = mainreal3()
 	f = cell(1,1);
 	f{1} = @r_1;
 
-	cond = 100000
-	[x, y] = euler([cond], 0, f, h, steps);
+	cond = 100000;
+	[x, y] = euler_for3(cond, 0, f, h, steps);
 	figure;
 	plot(x, y(1, :), '-o');
 
-	[x, y] = euler_back_for3([cond], 0, f, h, steps);
+	[x, y] = euler_back_for3(cond, 0, f, h, steps);
 	figure;
 	plot(x, y(1, :), '-o');
 end
