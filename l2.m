@@ -1,9 +1,9 @@
-main()
+main2()
 
 function [x, y] = euler(y0, x0, f, h, steps)
-	x = []
-	y = []
-	n = length(y0)
+	x = [];
+	y = [];
+	n = length(y0);
 	for j = 1:steps
 		for i = 1:n
 			if (j == 1)
@@ -98,6 +98,49 @@ function [x, y] = runge(y0, x0, f, h, steps)
 		y(:, j) = y(:, j-1) + (h / 6) * (k1 + 2 * k2 + 2 * k3 + k4);
 		x(j) = x(j-1) + h;
 	end
+end
+
+function res = p_1(x, y)
+	res = y(2);
+end
+function res = p_2(x, y)
+	l = 16.81;
+	res = l * y(1);
+end
+
+function [] = main2()
+	syms y(t)
+	eqn = diff(y,t,2) == 16.81 * y;
+	Dy = diff(y,t);
+
+	ySol(t) = dsolve(eqn);
+
+	cond = [y(0)==1, Dy(0)==-4.1];
+	ySol(t) = dsolve(eqn,cond)
+
+	i = 1;
+	y = [];
+	h = 0.01;
+	steps = 1400;
+	for x = 0:h:h*steps
+		y(i) = ySol(x);
+		i = i + 1;
+	end
+	figure;
+	plot(0:h:h*steps, y, '-o');
+
+
+	f = cell(2,1);
+	f{1} = @p_1;
+	f{2} = @p_2;
+
+	[x, y] = euler([1 -4.1], 0, f, h, steps);
+	figure;
+	plot(x, y(1, :), '-o');
+
+	[x, y] = runge([1 -4.1], 0, f, h, steps);
+	figure;
+	plot(x, y(1, :), '-o');
 end
 
 function res = f_1(x, y)
