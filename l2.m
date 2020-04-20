@@ -47,9 +47,60 @@ function [x, y] = euler_back(y0, x0, f, h, steps)
 	end
 end
 
+function [x, y] = runge(y0, x0, f, h, steps)
+	x = [];
+	y = [];
+	n = length(y0);
+
+	for j = 1:steps
+
+		if (j == 1)
+			x(j) = x0;
+			y(:,j) = y0;
+			continue
+		end
+
+		%{
+		 { k_i is row, y_prev is row
+		 %}
+		k1 = [];
+		k2 = [];
+		k3 = [];
+		k4 = [];
+		for i = 1:n
+			curf = f{i};
+			y_prev = transpose(y(:, j-1));
+
+			k1(i) = curf(x(j-1), y_prev);
+		end
+		for i = 1:n
+			curf = f{i};
+			y_prev = transpose(y(:, j-1));
+
+			k2(i) = curf(x(j-1) + 0.5*h, y_prev + k1 * (0.5*h));
+		end
+		for i = 1:n
+			curf = f{i};
+			y_prev = transpose(y(:, j-1));
+
+			k3(i) = curf(x(j-1) + 0.5*h, y_prev + k2 * (0.5*h));
+		end
+		for i = 1:n
+			curf = f{i};
+			y_prev = transpose(y(:, j-1));
+
+			k4(i) = curf(x(j-1) + h, y_prev + k3 * h);
+		end
+		k1 = transpose(k1);
+		k2 = transpose(k2);
+		k3 = transpose(k3);
+		k4 = transpose(k4);
+		y(:, j) = y(:, j-1) + (h / 6) * (k1 + 2 * k2 + 2 * k3 + k4);
+		x(j) = x(j-1) + h;
+	end
+end
+
 function res = f_1(x, y)
-	y
-	y(2)
 	res = y(2);
 end
 function res = f_2(x, y)
@@ -82,7 +133,10 @@ function [] = main()
 	f{2} = @f_2;
 	h = 0.01;
 	steps = 700;
-	[x, y] = euler_back([0 1], 0, f, h, steps);
+	[x, y] = runge([0 1], 0, f, h, steps);
+	%{
+	 { [x, y] = euler_back([0 1], 0, f, h, steps);
+	 %}
 	%{
 	 { [x, y] = euler([0 1], 0, f, h, steps);
 	 %}
