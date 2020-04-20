@@ -1,4 +1,4 @@
-main2()
+main3()
 
 function [x, y] = euler(y0, x0, f, h, steps)
 	x = [];
@@ -100,6 +100,48 @@ function [x, y] = runge(y0, x0, f, h, steps)
 	end
 end
 
+function [] = main3()
+	syms y(t)
+	eqn = diff(y,t,2) == -16.81 * y - 8.2 * diff(y,t);
+	Dy = diff(y,t);
+
+	cond = [y(0)==1, Dy(0)==-4.1];
+	ySol(t) = dsolve(eqn,cond);
+
+	i = 1;
+	y = [];
+	h = 0.01;
+	steps = 1400;
+	for x = 0:h:h*steps
+		y(i) = ySol(x);
+		i = i + 1;
+	end
+	figure;
+	plot(0:h:h*steps, y, '-o');
+
+
+	f = cell(2,1);
+	f{1} = @g_1;
+	f{2} = @g_2;
+
+	[x, y] = euler([1 -4.1], 0, f, h, steps);
+	figure;
+	plot(x, y(1, :), '-o');
+
+	[x, y] = runge([1 -4.1], 0, f, h, steps);
+	figure;
+	plot(x, y(1, :), '-o');
+end
+
+function res = g_1(x, y)
+	res = y(2);
+end
+function res = g_2(x, y)
+	a = -16.81;
+	b = -8.2;
+	res = a * y(1) + b * y(2);
+end
+
 function res = p_1(x, y)
 	res = y(2);
 end
@@ -116,7 +158,7 @@ function [] = main2()
 	ySol(t) = dsolve(eqn);
 
 	cond = [y(0)==1, Dy(0)==-4.1];
-	ySol(t) = dsolve(eqn,cond)
+	ySol(t) = dsolve(eqn,cond);
 
 	i = 1;
 	y = [];
