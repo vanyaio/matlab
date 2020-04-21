@@ -1,3 +1,7 @@
+%{
+ { Программа вывод коэф. процесса управления, первые несколько графиков
+ { оптимизацинного процесса, и последний график для минимуме функционала
+ %}
 global zs;
 global m;
 global b;
@@ -19,8 +23,8 @@ main();
 
 function [] = main()
 	k_p_d = fminsearch(@(k)(calc_integral(k)),[1 1]);
-	kp = k_p_d(1);
-	kd = k_p_d(2);
+	kp = k_p_d(1)
+	kd = k_p_d(2)
 
 	[z, dz] = get_solution_handle(kp, kd);
 	t = 0:001:50;
@@ -33,11 +37,8 @@ function res = calc_integral(k)
 	kp = k(1);
 	kd = k(2);
 
-	%{
-	 { if (mod(randi(1000), 15) == 0) 
-	 %}
-	 i = i + 1
-	 if (i < 20)
+	 i = i + 1;
+	 if (i < 8)
 		[z, dz] = get_solution_handle(kp, kd);
 		t = 0:1:50;
 		figure()
@@ -52,23 +53,8 @@ function handle = get_integral_handle(kp, kd)
 	global zs;
 	[z, dz] = get_solution_handle(kp, kd);
 	u = get_u(z, dz, kp, kd);
-	%{
-	 { handle = @(t)double((z(t(1)) - zs) ^ 2 + dz(t(1)) ^ 2 + u(t(1)));
-	 %}
 	handle = @(t)double((z(t) - zs) ^ 2 + dz(t) ^ 2 + u(t));
-	%{
-	 { h1 = @(t)((z(t(1)) - zs) ^ 2 + dz(t(1)) ^ 2 + u(t(1)));
-	 %}
-	%{
-	 { handle = @hack
-	 %}
 end
-
-%{
- { function res = hack(z, dz, u)
- {     global zs;
- { end
- %}
 
 function handle = get_u(z, dz, kp, kd)
 	global t0;
@@ -85,14 +71,8 @@ function [z_h, dz_h] = get_solution_handle(kp, kd)
 
 	cond = [z(0)==0, Dz(0)==0];
 	zSol(t) = dsolve(eqn, cond);
-	z_h = matlabFunction(zSol)
-	dz_h = matlabFunction(diff(zSol))
-
-	%{
-	 { kek = z_h(10)
-	 { kek1 = dz_h(10)
-	 { plot([1, 2], [kek, kek1], '-o')
-	 %}
+	z_h = matlabFunction(zSol);
+	dz_h = matlabFunction(diff(zSol));
 end
 
 function res = penalty(kp, kd)
