@@ -12,6 +12,9 @@ g = 9.8;
 w = sqrt((m*g)/(4*b));
 t0 = 4*b*w*w;
 
+global i;
+i = 0;
+
 main();
 
 function [] = main()
@@ -21,12 +24,26 @@ function [] = main()
 
 	[z, dz] = get_solution_handle(kp, kd);
 	t = 0:001:50;
-	plot(t, arrayfun(z, t));
+	figure()
+	plot(t, arrayfun(z, t))
 end
 
 function res = calc_integral(k)
+	global i;
 	kp = k(1);
 	kd = k(2);
+
+	%{
+	 { if (mod(randi(1000), 15) == 0) 
+	 %}
+	 i = i + 1
+	 if (i < 20)
+		[z, dz] = get_solution_handle(kp, kd);
+		t = 0:1:50;
+		figure()
+		plot(t, arrayfun(z, t))
+	end
+
 	integral_handle = get_integral_handle(kp, kd);
 	res = integral(integral_handle, 0, 50,'ArrayValued', true) + penalty(kp, kd);
 end
@@ -68,8 +85,8 @@ function [z_h, dz_h] = get_solution_handle(kp, kd)
 
 	cond = [z(0)==0, Dz(0)==0];
 	zSol(t) = dsolve(eqn, cond);
-	z_h = zSol
-	dz_h = diff(zSol)
+	z_h = matlabFunction(zSol)
+	dz_h = matlabFunction(diff(zSol))
 
 	%{
 	 { kek = z_h(10)
