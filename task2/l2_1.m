@@ -1,3 +1,10 @@
+%{
+ { Первое ур-ние неустойчиво, поскольку общее решение (ySol_common1) содержит
+ { положительную экспоненту, которая впоследствии приводит к наблюдаемой
+ { неограниченности именно численного решения (аналитически оно асимпт. устойчиво -
+ { ySol_part1), во втором случае момент с положительной экспонентой отсутствует,
+ { и аналогичных проблем не наблюдается
+ %}
 eq1();
 eq2();
 
@@ -114,16 +121,16 @@ function [] = eq1()
 	eqn = diff(y,t,2) == 16.81 * y;
 	Dy = diff(y,t);
 
-	ySol(t) = dsolve(eqn)
+	ySol_common1(t) = dsolve(eqn)
 
 	cond = [y(0)==1, Dy(0)==-4.1];
-	ySol(t) = dsolve(eqn,cond);
+	ySol_part1(t) = dsolve(eqn,cond)
 
 	h = 0.01;
 	steps = 1000;
 	x = 0:h:h*steps;
 	figure;
-	plot(x, arrayfun(matlabFunction(ySol), x), '-o');
+	plot(x, arrayfun(matlabFunction(ySol_part1), x), '-o');
 	legend('1st eq, analytic solution');
 
 	f = cell(2,1);
@@ -146,17 +153,17 @@ function [] = eq2()
 	eqn = diff(y,t,2) == -16.81 * y - 8.2 * diff(y,t);
 	Dy = diff(y,t);
 
-	ySol2(t) = dsolve(eqn)
+	ySol_common2(t) = dsolve(eqn)
 
 	cond = [y(0)==1, Dy(0)==-4.1];
-	ySol2(t) = dsolve(eqn,cond);
+	ySol_part2(t) = dsolve(eqn,cond)
 
 	h = 0.01;
 	steps = 1000;
 
 	x = 0:h:h*steps;
 	figure;
-	plot(x, arrayfun(matlabFunction(ySol2), x), '-o');
+	plot(x, arrayfun(matlabFunction(ySol_part2), x), '-o');
 	legend('2st eq, analytic solution');
 
 	f = cell(2,1);
