@@ -1,31 +1,87 @@
-%{
- { main_21();
- %}
+main_21();
 main_22();
 
 function [] = main_21
-	t2_1(0.5);
-	t2_3(0.5);
-	t2_1(1.5);
-	t2_3(1.5);
-	t2_1(2);
-	t2_3(2);
-	t2_1(3);
-	t2_3(3);
-	t2_1(5);
-	t2_3(5);
+	figure(); hold on;
+	v = 0.5
+	t2_1(v);
+	t2_3(v);
+	name = sprintf('nonlinear no-friction, init speed=%f', v);
+	name1 = sprintf('linear no-friction, init speed=%f', v);
+	legend(name, name1);
+
+	figure(); hold on;
+	v = 1.5
+	t2_1(v);
+	t2_3(v);
+	name = sprintf('nonlinear no-friction, init speed=%f', v);
+	name1 = sprintf('linear no-friction, init speed=%f', v);
+	legend(name, name1);
+
+	figure(); hold on;
+	v = 2
+	t2_1(v);
+	t2_3(v);
+	name = sprintf('nonlinear no-friction, init speed=%f', v);
+	name1 = sprintf('linear no-friction, init speed=%f', v);
+	legend(name, name1);
+
+	figure(); hold on;
+	v = 3
+	t2_1(v);
+	t2_3(v);
+	name = sprintf('nonlinear no-friction, init speed=%f', v);
+	name1 = sprintf('linear no-friction, init speed=%f', v);
+	legend(name, name1);
+
+	figure(); hold on;
+	v = 5
+	t2_1(v);
+	t2_3(v);
+	name = sprintf('nonlinear no-friction, init speed=%f', v);
+	name1 = sprintf('linear no-friction, init speed=%f', v);
+	legend(name, name1);
 end
 function [] = main_22
-	t2_2(0.5);
-	t2_4(0.5);
-	t2_2(1.5);
-	t2_4(1.5);
-	t2_2(2);
-	t2_4(2);
-	t2_2(3);
-	t2_4(3);
-	t2_2(5);
-	t2_4(5);
+	figure(); hold on;
+	v = 0.5
+	t2_2(v);
+	t2_4(v);
+	name = sprintf('nonlinear with-friction, init speed=%f', v);
+	name1 = sprintf('linear with-friction, init speed=%f', v);
+	legend(name, name1);
+
+	figure(); hold on;
+	v = 1.5
+	t2_2(v);
+	t2_4(v);
+	name = sprintf('nonlinear with-friction, init speed=%f', v);
+	name1 = sprintf('linear with-friction, init speed=%f', v);
+	legend(name, name1);
+
+	figure(); hold on;
+	v = 2
+	t2_2(v);
+	t2_4(v);
+	name = sprintf('nonlinear with-friction, init speed=%f', v);
+	name1 = sprintf('linear with-friction, init speed=%f', v);
+	legend(name, name1);
+
+	figure(); hold on;
+	v = 3
+	t2_2(v);
+	t2_4(v);
+	name = sprintf('nonlinear with-friction, init speed=%f', v);
+	name1 = sprintf('linear with-friction, init speed=%f', v);
+	legend(name, name1);
+
+	figure(); hold on;
+	v = 5
+	t2_2(v);
+	t2_4(v);
+	name = sprintf('nonlinear with-friction, init speed=%f', v);
+	name1 = sprintf('linear with-friction, init speed=%f', v);
+	legend(name, name1);
 end
 
 function [] = t2_1(v)
@@ -43,13 +99,8 @@ function [] = t2_1(v)
 	tFinal = 7;
 	ols = ode45(f,[tInit tFinal],x0);
 
-	name = sprintf('nonlinear no-friction, init speed=%d', v);
-	figure('Name', name);
-
 	yyaxis left;
-	plot(ols.x, ols.y(1,:), '-o');
-	ylabel('\theta (rad)');
-	xlabel('time');
+	plot(ols.x, ols.y(1,:), 'g');
 end
 
 function [] = t2_2(v)
@@ -60,8 +111,6 @@ function [] = t2_2(v)
 	M = matlabFunction(V,'vars', {'t','Y'})
 	sol = ode45(M,[0 x_end],[0 v]);
 
-	name = sprintf('nonlinear with-friction, init speed=%d', v);
-	figure('Name', name);
 
 	fplot(@(x)deval(sol,x,1), [0, x_end])
 end
@@ -82,10 +131,8 @@ function [] = t2_3(v)
 		i = i + 1;
 	end
 
-	name = sprintf('linear no-friction, init speed=%d', v);
-	figure('Name', name);
 
-	plot(0:h:7, y, '-o');
+	plot(0:h:7, y, 'r');
 end
 
 function [] = t2_4(v)
@@ -104,8 +151,6 @@ function [] = t2_4(v)
 		i = i + 1;
 	end
 
-	name = sprintf('linear with-friction, speed=%d', v);
-	figure('Name', name);
 
-	plot(0:h:6 * pi, y, '-o');
+	plot(0:h:6 * pi, y, 'r');
 end
