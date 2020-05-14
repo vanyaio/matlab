@@ -1,6 +1,9 @@
 %{
- { Программа вывод коэф. процесса управления, первые несколько графиков
- { оптимизацинного процесса, и последний график для минимуме функционала
+ { Вариант с учетом ограничений.
+ { Задается некоторое макс. вращение w_max, и поиск ведется с его учетом.
+ { Начальная точка (пара коэф. управления) для процедуры fminsearch
+ { была получена в ф-ции get_good_start, как обеспечивающая минимальный
+ { максимум на некотором дискретном промежутке коэффициентов.
  %}
 global zs;
 global m;
@@ -66,7 +69,7 @@ function [] = main1()
 	global b;
 	global w;
 
-	w
+	w0 = w
 	w_max = 1.3 
 	%{
 	 { k_p_d = fminsearch(@(k)(calc_integral(k)),[1 1]);
@@ -75,6 +78,10 @@ function [] = main1()
 
 	kp = k_p_d(1)
 	kd = k_p_d(2)
+	integr = calc_integral([kp kd])
+	if integr == 100000000
+		fprintf('solution not found\n')
+	end
 
 	[z, dz] = get_solution_handle(kp, kd);
 	t = 0:001:50;
@@ -140,6 +147,15 @@ function res = calc_integral(k)
 		 res = 100000000;
 		 return
 	end
+
+	%{
+	 { [val, idx] = min(y);
+	 { if val < 0
+	 {      res = 100000000;
+	 {      return
+	 { end
+	 %}
+
 	%{
 	 { xx1 = 1
 	 %}

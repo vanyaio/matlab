@@ -1,7 +1,8 @@
-%{
- { Программа вывод коэф. процесса управления, первые несколько графиков
- { оптимизацинного процесса, и последний график для минимуме функционала
- %}
+ %{
+  { Вариант без ограничений, исправленный.
+  { Программа выводит коэф. процесса управления и график для минимума функционала
+  %}
+ 
 global zs;
 global m;
 global b;
@@ -37,13 +38,15 @@ function res = calc_integral(k)
 	kp = k(1);
 	kd = k(2);
 
-	 i = i + 1;
-	 if (i < 8)
-		[z, dz] = get_solution_handle(kp, kd);
-		t = 0:1:50;
-		figure()
-		plot(t, arrayfun(z, t))
-	end
+	%{
+	 {  i = i + 1;
+	 {  if (i < 3)
+	 {     [z, dz] = get_solution_handle(kp, kd);
+	 {     t = 0:1:50;
+	 {     figure()
+	 {     plot(t, arrayfun(z, t))
+	 { end
+	 %}
 
 	integral_handle = get_integral_handle(kp, kd);
 	res = integral(integral_handle, 0, 50,'ArrayValued', true) + penalty(kp, kd);
@@ -53,7 +56,7 @@ function handle = get_integral_handle(kp, kd)
 	global zs;
 	[z, dz] = get_solution_handle(kp, kd);
 	u = get_u(z, dz, kp, kd);
-	handle = @(t)double((z(t) - zs) ^ 2 + dz(t) ^ 2 + u(t));
+	handle = @(t)double((z(t) - zs) ^ 2 + dz(t) ^ 2 + u(t) ^ 2);
 end
 
 function handle = get_u(z, dz, kp, kd)
