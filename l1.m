@@ -1,5 +1,14 @@
-1. Из подкоренного выражения в правой части видно не неприрывность
-при b > arcsin(1) = pi/2
+%{
+ { 1. Из подкоренного выражения в правой части видна ее не непрерывность
+ { при b > arcsin(1) = pi/2
+ %}
+ %{
+  { 2. Теорема Пеано дает построить некоторый промежуток h,
+  { но решение не гарантируется на промежутке большем max(y/(y^2+1)) = 1/2.
+  { Соотвественно решение ур-ния tan(x)
+  { является таковым только при x < pi/2.
+  %}
+	
 main1();
 
 function [x, y] = euler(y0, x0, f, h, steps)
@@ -31,18 +40,17 @@ function res = p_3(x, y)
 end
 
 function [] = main1()
-	h = 0.001;
-	steps = 100;
+	h = 0.0001;
+
 	for i=1:3
 		f = cell(1);
 		if i == 1
 			f{1} = @p_1;
-			%{
-			 { b = pi/3;
-			 %}
+			b = pi;
 		end
 		if i == 2
 			f{1} = @p_2;
+			b = pi/2;
 		end
 		if i == 3
 			f{1} = @p_3;
@@ -63,7 +71,13 @@ function [] = main1()
 			%{
 			 { legend('euler', 'runge')
 			 %}
-		else
+		end
+		if i == 2
+			hold on
+			plot(x, tan(x), 'blue');
+			legend('euler', 'runge', 'tan')
+		end
+		if i == 3
 			legend('euler', 'runge')
 		end
 	end
